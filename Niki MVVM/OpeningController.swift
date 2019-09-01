@@ -9,23 +9,27 @@
 import UIKit
 
 
-class OpeningController: UIViewController, SetupViewControllerProtocol {
+class OpeningController: UIViewController {
     
-    
+    weak var coordinator: MainCoordinator?
     private let TAG = String(describing: OpeningController.self)
-    private lazy var ui: OpeningView = {
-        let view = OpeningView()
-        return view
-    }()
     
     
     // MARK: - Events
     
     
+    override func loadView() {
+        let openingView = OpeningView() { [ weak self] in
+            self?.didPressNextButtons()
+        }
+        
+        view = openingView
+    }
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        setupView()
-        setupViewActions()
+        navigationItem.title = "Niki MVVM"
     }
     
     
@@ -40,49 +44,7 @@ class OpeningController: UIViewController, SetupViewControllerProtocol {
     }
     
     
-    // MARK: - View Actions
-    
-    
-    @objc private func didPressNextButtons(_ sender: UIButton) {
-        gotoEmployeeList()
+    fileprivate func didPressNextButtons() {
+        coordinator?.gotoEmployeeList()
     }
-    
-    
-    // MARK: - View Protocol
-    
-    
-    func setupView() {
-        navigationItem.title = "Niki MVVM"
-        
-        view.backgroundColor = .white
-        
-        view.addSubview(ui.nextButton)
-        
-        NSLayoutConstraint.activate(
-            [
-                ui.nextButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-                ui.nextButton.centerYAnchor.constraint(equalTo: view.centerYAnchor)
-            ]
-        )
-        
-    }
-    
-    
-    func setupViewActions() {
-        ui.nextButton.addTarget(self,
-                                action: #selector(didPressNextButtons(_:)),
-                                for: .touchUpInside)
-        
-        
-    }
-    
-    
-    // MARK: - private
-    
-    
-    private func gotoEmployeeList() {
-        let eplVC = EmployeesController()
-        navigationController?.pushViewController(eplVC, animated: true)
-    }
-    
 }

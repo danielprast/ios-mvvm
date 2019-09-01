@@ -11,9 +11,9 @@ import Foundation
 
 class EmployeeViewModel {
     
-    private var employee = Employee() {
+    private var employee: Employee {
         didSet {
-            employeeName.value = employee.employee_name
+            employeeName.value = "Agent \(employee.employee_name)"
         }
     }
     
@@ -31,6 +31,13 @@ extension EmployeeViewModel {
     
     func updateEmployee(newEmployee epl: Employee) {
         self.employee = epl
+    }
+    
+    
+    func updateEmployeeName(name: String) {
+        var updatedEmployee = employee
+        updatedEmployee.employee_name = name
+        updateEmployee(newEmployee: updatedEmployee)
     }
     
 }

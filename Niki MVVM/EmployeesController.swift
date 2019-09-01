@@ -9,11 +9,13 @@
 import UIKit
 
 
-class EmployeesController: UITableViewController, SetupViewControllerProtocol {
+class EmployeesController: UITableViewController {
     
     private let TAG = String(describing: EmployeesController.self)
     private var cellId = "cellId"
     private var viewModel = EmployeeListViewModel()
+    
+    var coordinator: MainCoordinator?
     
     
     // MARK: - Events
@@ -22,7 +24,6 @@ class EmployeesController: UITableViewController, SetupViewControllerProtocol {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupView()
-        setupViewActions()
         setupViewModel()
         viewModel.fetchEmployeeData()
     }
@@ -49,11 +50,6 @@ class EmployeesController: UITableViewController, SetupViewControllerProtocol {
         
         tableView.register(EmployeeCell.self, forCellReuseIdentifier: cellId)
         tableView.estimatedRowHeight = 44.0
-    }
-    
-    
-    func setupViewActions() {
-        // nothing for now
     }
     
     
@@ -84,21 +80,20 @@ extension EmployeesController {
     
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return viewModel.employees.value.count
+        return viewModel.employeeTotalCount()
     }
     
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath) as! EmployeeCell
-        let employee = viewModel.employees.value[indexPath.row]
-        cell.configureCell(employeeData: employee)
+        cell.configureCell(employeeData: viewModel.employee(at: indexPath.row))
         return cell
     }
     
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let employee = viewModel.employees.value[indexPath.row]
-        shout("Employee Data", employee)
+        //let employee = viewModel.employee(at: indexPath.row)
+        coordinator?.show(viewModel.employee(at: indexPath.row))
         tableView.deselectRow(at: indexPath, animated: true)
     }
     

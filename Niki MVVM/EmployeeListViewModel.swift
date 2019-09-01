@@ -31,6 +31,14 @@ class EmployeeListViewModel {
         self.employeesDataSource = employees
     }
     
+    func employee(at index: Int) -> Employee {
+        return employees.value[index]
+    }
+    
+    func employeeTotalCount() -> Int {
+        return employees.value.count
+    }
+    
 }
 
 
